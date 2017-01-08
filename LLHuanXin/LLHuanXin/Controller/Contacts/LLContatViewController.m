@@ -7,6 +7,7 @@
 //
 
 #import "LLContatViewController.h"
+#import "LLUserInfoViewController.h"
 
 @interface LLContatViewController ()
 
@@ -37,8 +38,23 @@
 
 }
 
-#pragma mark - Table view data source
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    
+    if ([segue.identifier isEqualToString:@"contacts"]) {
+        
+        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        
+        LLUserInfoViewController *userVC = segue.destinationViewController;
 
+        userVC.userName = self.contacts[indexPath.row];
+        
+    }
+
+}
+
+
+
+#pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.contacts.count;
@@ -62,11 +78,7 @@
             // 刷新界面
             [self getContactsFromServer];
         }
-        
-        
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+    }
 }
 
 

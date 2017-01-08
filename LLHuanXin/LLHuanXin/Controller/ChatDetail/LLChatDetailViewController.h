@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LLChatDetailViewController : UITableViewController
+@interface LLChatDetailViewController : UIViewController
+
+@property (nonatomic, copy)NSString *userName;
+
 
 @end

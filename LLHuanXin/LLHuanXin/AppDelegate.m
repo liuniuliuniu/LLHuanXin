@@ -14,7 +14,7 @@
 #import "LLContatViewController.h"
 
 
-@interface AppDelegate ()<EMClientDelegate,EMContactManagerDelegate>
+@interface AppDelegate ()<EMClientDelegate,EMContactManagerDelegate,EMChatManagerDelegate>
 
 @end
 
@@ -22,6 +22,8 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    NSLog(@"%@", NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject);
     
     self.window.backgroundColor = [UIColor whiteColor];
     
@@ -42,10 +44,25 @@
     // 注册好友回调
     [[EMClient sharedClient].contactManager addDelegate:self delegateQueue:nil];
     
-    
-    
+    //注册消息回调
+    [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:nil];
+
     return YES;
 }
+
+#pragma mark - EMChatManagerDelegate
+
+- (void)messagesDidReceive:(NSArray *)aMessages{
+
+    NSLog(@"收到消息");
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:KLLHuanXinDidReciveMsgInfo object:nil];
+    
+    
+}
+
+
+
 
 #pragma mark - EMContactManagerDelegate
 /*!

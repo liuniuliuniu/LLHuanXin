@@ -10,4 +10,7 @@
 
 @interface LLUserInfoViewController : UITableViewController
 
+@property (nonatomic, copy)NSString *userName;
+
+
 @end

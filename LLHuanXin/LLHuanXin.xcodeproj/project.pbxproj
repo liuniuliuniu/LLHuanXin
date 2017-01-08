@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C2D39191E21D3F30026FCA8 /* LLChatDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C2D39181E21D3F30026FCA8 /* LLChatDetailViewController.m */; };
+		8C2D391D1E21D71B0026FCA8 /* LLUserInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C2D391C1E21D71B0026FCA8 /* LLUserInfoViewController.m */; };
 		8C5E674D1E20C10300D281F9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C5E674C1E20C10300D281F9 /* main.m */; };
 		8C5E67501E20C10300D281F9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C5E674F1E20C10300D281F9 /* AppDelegate.m */; };
 		8C5E67531E20C10300D281F9 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C5E67521E20C10300D281F9 /* ViewController.m */; };
@@ -33,6 +35,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8C2D39171E21D3F30026FCA8 /* LLChatDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLChatDetailViewController.h; sourceTree = "<group>"; };
+		8C2D39181E21D3F30026FCA8 /* LLChatDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLChatDetailViewController.m; sourceTree = "<group>"; };
+		8C2D391B1E21D71B0026FCA8 /* LLUserInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLUserInfoViewController.h; sourceTree = "<group>"; };
+		8C2D391C1E21D71B0026FCA8 /* LLUserInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLUserInfoViewController.m; sourceTree = "<group>"; };
 		8C5E67481E20C10300D281F9 /* LLHuanXin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LLHuanXin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C5E674C1E20C10300D281F9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8C5E674E1E20C10300D281F9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -122,6 +128,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8C2D39161E21D00B0026FCA8 /* ChatDetail */ = {
+			isa = PBXGroup;
+			children = (
+				8C2D39171E21D3F30026FCA8 /* LLChatDetailViewController.h */,
+				8C2D39181E21D3F30026FCA8 /* LLChatDetailViewController.m */,
+			);
+			path = ChatDetail;
+			sourceTree = "<group>";
+		};
+		8C2D391A1E21D70D0026FCA8 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				8C2D391B1E21D71B0026FCA8 /* LLUserInfoViewController.h */,
+				8C2D391C1E21D71B0026FCA8 /* LLUserInfoViewController.m */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
 		8C5E673F1E20C10300D281F9 = {
 			isa = PBXGroup;
 			children = (
@@ -240,6 +264,8 @@
 		8C5E67991E20D9CA00D281F9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				8C2D391A1E21D70D0026FCA8 /* User */,
+				8C2D39161E21D00B0026FCA8 /* ChatDetail */,
 				8C5E67B31E21354D00D281F9 /* Contacts */,
 				8C5E67AF1E2125D100D281F9 /* AddFriend */,
 				8C5E67AB1E211B7E00D281F9 /* Profile */,
@@ -389,9 +415,11 @@
 				8C5E67AA1E2114F700D281F9 /* LLSettingsViewController.m in Sources */,
 				8C5E67531E20C10300D281F9 /* ViewController.m in Sources */,
 				8C5E67501E20C10300D281F9 /* AppDelegate.m in Sources */,
+				8C2D391D1E21D71B0026FCA8 /* LLUserInfoViewController.m in Sources */,
 				8C5E67B21E2125FD00D281F9 /* LLAddContactViewController.m in Sources */,
 				8C5E674D1E20C10300D281F9 /* main.m in Sources */,
 				8C5E67AE1E211B8A00D281F9 /* LLProfileViewController.m in Sources */,
+				8C2D39191E21D3F30026FCA8 /* LLChatDetailViewController.m in Sources */,
 				8C5E67A21E20E8D600D281F9 /* LLTabBarViewController.m in Sources */,
 				8C5E67B61E21356700D281F9 /* LLContatViewController.m in Sources */,
 				8C5E67A51E20EB7D00D281F9 /* LLLoginViewController.m in Sources */,
@@ -566,6 +594,7 @@
 				8C5E67611E20C10300D281F9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
