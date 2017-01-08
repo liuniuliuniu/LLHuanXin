@@ -7,8 +7,14 @@
 //
 
 #import "AppDelegate.h"
+// SDK
+#import "EMSDK.h"
 
-@interface AppDelegate ()
+// VC
+#import "LLContatViewController.h"
+
+
+@interface AppDelegate ()<EMClientDelegate,EMContactManagerDelegate>
 
 @end
 
@@ -16,36 +22,152 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    
+    self.window.backgroundColor = [UIColor whiteColor];
+    
+    EMOptions *options = [EMOptions optionsWithAppkey:@"1143161217115750#llhuanxin"];
+    options.apnsCertName = nil;
+    [[EMClient sharedClient] initializeSDKWithOptions:options];
+    
+    // 是否自动登录
+    BOOL isAutoLogin = [EMClient sharedClient].options.isAutoLogin;
+    if (isAutoLogin) {
+        UIStoryboard *mainSB = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        UITabBarController *tabBarVc = [mainSB instantiateViewControllerWithIdentifier:@"LLTabBar"];
+        self.window.rootViewController = tabBarVc;
+    }
+    
+    
+    
+    // 注册好友回调
+    [[EMClient sharedClient].contactManager addDelegate:self delegateQueue:nil];
+    
+    
+    
     return YES;
 }
 
+#pragma mark - EMContactManagerDelegate
+/*!
+ *  用户A发送加用户B为好友的申请，用户B会收到这个回调(接收到好友请求)
+ *
+ *  @param aUsername   用户名
+ *  @param aMessage    附属信息
+ */
+- (void)friendRequestDidReceiveFromUser:(NSString *)aUsername
+                                message:(NSString *)aMessage{
+    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"好友请求" message:[NSString stringWithFormat:@"收到来自%@的好友请求,附加信息为%@",aUsername,aMessage] preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"同意" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        EMError *error = [[EMClient sharedClient].contactManager acceptInvitationForUsername:aUsername];
+        if (!error) {
+            NSLog(@"发送同意成功");
+            
+            
+            // 要刷新联系人列表
+            UITabBarController *tabberVC = self.window.rootViewController;
+            LLContatViewController *contactVC = tabberVC.childViewControllers[1].childViewControllers[0];
+            [contactVC getContactsFromServer];
 
-- (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+            
+            
+        }
+    }];
+    
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"拒绝" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        
+        EMError *error = [[EMClient sharedClient].contactManager declineInvitationForUsername:aUsername];
+        if (!error) {
+            NSLog(@"发送拒绝成功");
+        }
+    }];
+    
+    [alertC addAction:action1];
+    [alertC addAction:action2];
+    
+    [self.window.rootViewController presentViewController:alertC animated:YES completion:nil];
+    
 }
+
+/*!
+ @method
+ @brief 用户A发送加用户B为好友的申请，用户B同意后，用户A会收到这个回调
+ */
+- (void)friendRequestDidApproveByUser:(NSString *)aUsername{
+    
+    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"好友通知" message:[NSString stringWithFormat:@"%@已经成为你的好友",aUsername] preferredStyle:UIAlertControllerStyleAlert];
+    [self.window.rootViewController presentViewController:alertC animated:YES completion:nil];
+    // 要刷新联系人列表
+    UITabBarController *tabberVC = self.window.rootViewController;
+    LLContatViewController *contactVC = tabberVC.childViewControllers[1].childViewControllers[0];
+    [contactVC getContactsFromServer];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [alertC dismissViewControllerAnimated:YES completion:nil];
+    });
+ 
+}
+
+
+/*!
+ @method
+ @brief 用户A发送加用户B为好友的申请，用户B拒绝后，用户A会收到这个回调
+ */
+- (void)friendRequestDidDeclineByUser:(NSString *)aUsername{
+
+    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"好友通知" message:[NSString stringWithFormat:@"%@拒绝成为你的好友",aUsername] preferredStyle:UIAlertControllerStyleAlert];
+    
+    [self.window.rootViewController presentViewController:alertC animated:YES completion:nil];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [alertC dismissViewControllerAnimated:YES completion:nil];
+    });
+}
+
+
+//用户B删除与用户A的好友关系后，用户A会收到这个回调
+- (void)friendshipDidRemoveByUser:(NSString *)aUsername{
+    
+    //刷新联系人列表
+    UITabBarController *tabBarVc = self.window.rootViewController;
+    LLContatViewController *contactVc = tabBarVc.childViewControllers[1].childViewControllers[0];
+    [contactVc getContactsFromServer];
+}
+
+
+
+
 
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [[EMClient sharedClient] applicationDidEnterBackground:application];
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    [[EMClient sharedClient] applicationWillEnterForeground:application];
 }
 
 
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+#pragma mark - EMClientDelegate
+
+/*!
+ *  SDK连接服务器的状态变化时会接收到该回调
+ *
+ *  有以下几种情况，会引起该方法的调用：
+ *  1. 登录成功后，手机无法上网时，会调用该回调
+ *  2. 登录成功后，网络状态变化时，会调用该回调
+ *
+ *  @param aConnectionState 当前状态
+ */
+- (void)connectionStateDidChange:(EMConnectionState)aConnectionState{
+    
+    NSLog(@"连接状态发生变化后调用");
 }
 
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
 
 
-- (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-}
+
 
 
 @end
